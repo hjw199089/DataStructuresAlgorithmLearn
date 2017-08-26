@@ -1,5 +1,7 @@
 package Algorithm.Tree.BinaryTree;
 
+import scala.Int;
+
 import java.io.Console;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -19,6 +21,7 @@ public class BinTree {
     /*==================================
          递归先序遍历构建二叉树
     ==================================*/
+//控制台输入方式
     public static BinNodePtr createBinTree() {
         BinNodePtr root = null;
 
@@ -37,6 +40,38 @@ public class BinTree {
 
         return root;
     }
+
+//以先序字符串的方式构建二叉树
+    private static class Index{
+        int val;
+
+        public Index(int val) {
+            this.val = val;
+        }
+    }
+    private static BinNodePtr createTreeWithString(Index index, String[] preOrderArr, int len){
+        BinNodePtr root = null;
+        if (len > index.val){
+            if (!preOrderArr[index.val].equals("#")) {
+                //构建节点
+                root = new BinNodePtr(preOrderArr[index.val++]);
+                //构建左子树
+                root.setLeft(createTreeWithString(index,preOrderArr,len));
+                //构建右子树
+                root.setRight(createTreeWithString(index,preOrderArr,len));
+            } else {
+                index.val++;
+            }
+        }
+        return root;
+    }
+
+    public static BinNodePtr createBinTreeWithString(String preOrderTree) {
+        String[] preOrderArr = preOrderTree.split("\\s+");
+        Index index = new Index(0);
+        return createTreeWithString(index, preOrderArr,preOrderArr.length);
+    }
+
 
     /*==================================
     先序遍历
@@ -155,10 +190,68 @@ public class BinTree {
     }
 
 
+    /*==================================
+    判断一个节点是否在一颗子树中
+    先根遍历,找到退出
+     ==================================*/
+    public static boolean isNodeOfTree(BinNodePtr root,BinNodePtr targetNode){
+        if (root == null || targetNode == null)
+            return false;
+        if (root == targetNode){
+            return true;
+        }
+        return isNodeOfTree(root.left(),targetNode) || isNodeOfTree(root.right(),targetNode);
+    }
+
+    /*==================================
+    是否子树判断
+    判断一棵树是否另一棵树的子树
+    本质是判断节点相同(所有是递归),
+    第一步:先从大树的根节点开始遍历找到一个节点和小树的根节点相同(一个节点在一棵树中)
+    第二步:判断节点完全相同(这个所有节点误差的判断递归)
+    这里假设数的节点时数字,元素相同即可
+     ==================================*/
+    private static boolean isChildTreeCmpFun(BinNodePtr root,BinNodePtr childroot){
+        if (childroot == null)
+            return true;
+        //子树还有节点,大树没有节点了
+        if (root == null)
+            return false;
+        //当前节点元素值相同
+        if (! root.element().toString().equals(childroot.element().toString()))
+            return false;
+        //左右都相同
+        return isChildTreeCmpFun(root.left(),childroot.left()) &&  isChildTreeCmpFun(root.right(),childroot.right());
+    }
+
+    public static boolean isChildTree(BinNodePtr root,BinNodePtr childroot){
+        if (childroot == null || root == null)
+            return false;
+
+        boolean res = false;
+        //找到根节点
+        if (root.element().toString().equals(childroot.element().toString())){
+            //递归判断整个小树是大树的子树
+            res= isChildTreeCmpFun(root,childroot);
+        }
+        //在左右子树中寻找相同的根节点
+        if (!res){
+            res=  isChildTree(root.left(),childroot);
+        }
+        if (!res){
+            res=  isChildTree(root.right(),childroot);
+        }
+
+        return res;
+    }
+
+
     public static void main(String[] args) {
 
         //前序遍历构建二叉树,已'#'符号做null节点
-        BinNodePtr root = createBinTree();
+        //BinNodePtr root = createBinTree();
+        String preTree= "1 2 4 # # 5 6 # # 7 # # 3 # #";
+        BinNodePtr root = createBinTreeWithString(preTree);
 
         System.out.println("前序遍历:");
         preOrder(root);
@@ -174,6 +267,23 @@ public class BinTree {
 
         int numOfLeaf = getNumOfLeaf(root);
         System.out.println("叶子数:\t" +  numOfLeaf);
+
+        //mirroTree(root);
+        //System.out.println("镜像后的前序遍历:");
+        //preOrder(root);
+
+        boolean isNodeA = isNodeOfTree(root,root.left().right());
+        BinNodePtr otherNode = new BinNodePtr(10);
+        boolean isNodeB = isNodeOfTree(root,otherNode);
+        System.out.println("是否节点判断:\n" + "\tisNodeA= "+isNodeA +"\tisNodeB= "+isNodeB  );
+
+        //树为:1 2 4 # # 5 6 # # 7 # # 3 # #
+        BinNodePtr childroot = root.left().right();
+        boolean isChTree =  isChildTree(root,childroot);
+        System.out.println("是否子树:" + isChTree);
+        BinNodePtr otherchildroot = createBinTreeWithString("2 6 # # 5 # #");
+        isChTree =  isChildTree(root,otherchildroot);
+        System.out.println("是否子树:" + isChTree);
     }
 }
 
