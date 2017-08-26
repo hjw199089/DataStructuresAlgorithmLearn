@@ -1,0 +1,8 @@
+----队列
+java中使用队列:java.util.Queue
+要使用offer()来加入元素
+使用poll()来获取并移出元素。
+它们的优点是通过返回值可以判断成功与否
+LinkedList类实现了Queue接口，可以把LinkedList当成Queue来用。
+使用样例见:
+QueueTest

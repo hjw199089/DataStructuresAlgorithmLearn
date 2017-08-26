@@ -1,0 +1,1 @@
+Main-Class: com.scalalearn.java.main.App
