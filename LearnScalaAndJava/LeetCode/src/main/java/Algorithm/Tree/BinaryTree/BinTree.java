@@ -3,6 +3,7 @@ package Algorithm.Tree.BinaryTree;
 import scala.Int;
 
 import java.io.Console;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -245,6 +246,106 @@ public class BinTree {
         return res;
     }
 
+    /*==================================
+    查找二叉树中两个节点的最低祖先节点（或最近公共父节点等）---递归法
+    前提是两个节点都在,否则先用判断节点是否在树中做一轮判断
+    (1)如果两个节点都在该节点的左子树,则在左边继续找
+    (2)如果两个节点都在该节点的右子树,则在右边继续找
+    (3)如果一个在左,一个在右,返回该节点
+    伪代码
+    比较当前A节点
+        若相等返回A节点;
+        若没有
+            B=递归左边
+            C=递归右边
+        若左右中只有一个有,返回有的一方B/C;若两边都有返回当前节点A
+      可见递归法需要每个节点都做左右子树的比较
+     ==================================*/
+    public static  BinNodePtr getLastCommonParentRecur(BinNodePtr root,int  targetA,int targetB){
+        if(root == null)
+            return null;
+        //如果找到元素,返回该元素
+        if(Integer.parseInt(root.element().toString()) == targetA
+                || Integer.parseInt(root.element().toString()) == targetB){
+            return root;
+        }
+        //判断该节点左右子树中的查询情况
+        BinNodePtr leftRes = getLastCommonParentRecur(root.left(),targetA,targetB);
+        BinNodePtr rightRes = getLastCommonParentRecur(root.right(),targetA,targetB);
+        //若分布在左右两边,返回当前节点
+        if (leftRes != null && rightRes != null) {
+            return root;
+        }
+        //否则,返回左右中有的一方
+        return (leftRes != null ? leftRes:rightRes);
+    }
+
+    /*==================================
+    到某个节点的路径
+    先序遍历,用队列(LinkList存储)
+    伪代码
+    先序根节点
+        若为null,返回res = false
+        若相等则,将该节点入栈,返回res = true
+        res = 在递归左子树
+        若左边没有
+            res =  递归右子树
+        若右边没有,将该节点在路径中删除
+        返回本次查询结果res
+    ==================================*/
+    public static boolean getPathOfNode(BinNodePtr root,BinNodePtr targetNode,LinkedList<BinNodePtr> path){
+        if (root == null) return false;
+
+        path.offer(root);
+
+        if (root == targetNode){
+            return true;
+        }
+
+        boolean res = getPathOfNode(root.left(),targetNode,path);
+        if (res == false){
+            res = getPathOfNode(root.right(),targetNode,path);
+        }
+
+        if (res == false){
+            path.removeLast();
+        }
+        return res;
+    }
+
+    /*==================================
+    查找二叉树中两个节点的最低祖先节点（或最近公共父节点等）---非递归解法
+    先找到两个节点的path,从路径中找到最后一个公共的节点的即可
+    伪代码:
+    第1个节点的path1
+    第2个节点的path2
+    循环找到最后一个公共的节点
+     ==================================*/
+    public static BinNodePtr getLastCommonParent(BinNodePtr root,BinNodePtr targetNodeA,BinNodePtr targetNodeB){
+        if (root == null || targetNodeA == null || targetNodeB ==null){
+            return null;
+        }
+        LinkedList<BinNodePtr> pathA = new LinkedList<BinNodePtr>();
+        boolean isFindA  = getPathOfNode(root,targetNodeA,pathA);
+
+        LinkedList<BinNodePtr> pathB = new LinkedList<BinNodePtr>();
+        boolean isFindB  = getPathOfNode(root,targetNodeB,pathB);
+
+        BinNodePtr last = null;
+        if (isFindB && isFindA){
+            Iterator<BinNodePtr> iterA = pathA.iterator();
+            Iterator<BinNodePtr> iterB = pathB.iterator();
+            while(iterA.hasNext()  && iterB.hasNext()){
+                BinNodePtr temp = iterA.next();
+                if (temp == iterB.next())
+                    last = temp;
+            }
+        }
+        return  last;
+    }
+
+
+
 
     public static void main(String[] args) {
 
@@ -284,6 +385,25 @@ public class BinTree {
         BinNodePtr otherchildroot = createBinTreeWithString("2 6 # # 5 # #");
         isChTree =  isChildTree(root,otherchildroot);
         System.out.println("是否子树:" + isChTree);
+
+        preTree= "1 2 4 # # 5 6 # # 7 # # 3 # #";
+        root = createBinTreeWithString(preTree);
+        System.out.println("递归返回最低公共祖先");
+        System.out.println(getLastCommonParentRecur(root,5,3));//返回1
+        System.out.println(getLastCommonParentRecur(root,4,5));//返回2
+        System.out.println(getLastCommonParentRecur(root,4,2));//返回2
+
+        LinkedList<BinNodePtr> path = new LinkedList<BinNodePtr>();
+        boolean isFind = getPathOfNode(root,root.left().right(),path);
+        if (isFind){
+            System.out.println("路径为:");
+            System.out.println(path.toString());
+        }
+
+        System.out.println("非递归返回最低公共祖先:");
+        BinNodePtr last= getLastCommonParent(root,root.left().right(),root.right());
+        System.out.println(last);
+
     }
 }
 

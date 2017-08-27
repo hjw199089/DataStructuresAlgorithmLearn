@@ -65,4 +65,10 @@ public class BinNodePtr implements BinNode {
         System.out.println(this.element);
     }
 
+    @Override
+    public String toString() {
+        return "BinNodePtr{" +
+                "element=" + element +
+                '}';
+    }
 }
