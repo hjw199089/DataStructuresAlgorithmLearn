@@ -42,24 +42,25 @@ public class BinTree {
         return root;
     }
 
-//以先序字符串的方式构建二叉树
-    private static class Index{
+    //以先序字符串的方式构建二叉树
+    private static class Index {
         int val;
 
         public Index(int val) {
             this.val = val;
         }
     }
-    private static BinNodePtr createTreeWithString(Index index, String[] preOrderArr, int len){
+
+    private static BinNodePtr createTreeWithString(Index index, String[] preOrderArr, int len) {
         BinNodePtr root = null;
-        if (len > index.val){
+        if (len > index.val) {
             if (!preOrderArr[index.val].equals("#")) {
                 //构建节点
                 root = new BinNodePtr(preOrderArr[index.val++]);
                 //构建左子树
-                root.setLeft(createTreeWithString(index,preOrderArr,len));
+                root.setLeft(createTreeWithString(index, preOrderArr, len));
                 //构建右子树
-                root.setRight(createTreeWithString(index,preOrderArr,len));
+                root.setRight(createTreeWithString(index, preOrderArr, len));
             } else {
                 index.val++;
             }
@@ -70,7 +71,7 @@ public class BinTree {
     public static BinNodePtr createBinTreeWithString(String preOrderTree) {
         String[] preOrderArr = preOrderTree.split("\\s+");
         Index index = new Index(0);
-        return createTreeWithString(index, preOrderArr,preOrderArr.length);
+        return createTreeWithString(index, preOrderArr, preOrderArr.length);
     }
 
 
@@ -138,44 +139,45 @@ public class BinTree {
     按照层把元素存起来,边存边打印
     整体上和链表的遍历一样,只不过链表可以用pNext指针记住下一个节点,这里树不能用一个指针记住所以要临时存储
      ==================================*/
-    public static void levelOrder(BinNodePtr root){
-        if(root == null)
+    public static void levelOrder(BinNodePtr root) {
+        if (root == null)
             return;
         Queue<Object> queue = new LinkedList<Object>();
         queue.offer(root);
-        while(queue.size()!=0){
+        while (queue.size() != 0) {
             //访问当前节点
-            BinNodePtr binNode = (BinNodePtr)queue.poll();
+            BinNodePtr binNode = (BinNodePtr) queue.poll();
             binNode.visit();
             //将当前节点的孩子节点暂存
-            if (binNode.left() != null){
+            if (binNode.left() != null) {
                 queue.offer(binNode.left());
             }
-            if (binNode.right() != null){
+            if (binNode.right() != null) {
                 queue.offer(binNode.right());
             }
         }
     }
+
     /*==================================
     求叶子节点的个数
     树中的叶子节点的个数 = 左子树中叶子节点的个数 + 右子树中叶子节点的个数
      ==================================*/
-    public static int getNumOfLeaf(BinNodePtr root){
+    public static int getNumOfLeaf(BinNodePtr root) {
         if (root == null)
             return 0;
         //该节点为叶子节点
-        if (root.left() == null && root.right() == null){
+        if (root.left() == null && root.right() == null) {
             return 1;
         }
         //递归整个树的叶子节点个数 = 左子树叶子节点的个数 + 右子树叶子节点的个数
-        return  getNumOfLeaf(root.left()) + getNumOfLeaf(root.right());
+        return getNumOfLeaf(root.left()) + getNumOfLeaf(root.right());
     }
 
     /*==================================
     镜像二叉树
     交换二叉树的左右儿子，整体是先序递归
      ==================================*/
-    public static void mirroTree(BinNodePtr root){
+    public static void mirroTree(BinNodePtr root) {
         if (root == null)
             return;
         //交换孩子节点
@@ -185,7 +187,7 @@ public class BinTree {
         //递归
         if (root.left() != null)
             mirroTree(root.left());
-        if (root.right() != null){
+        if (root.right() != null) {
             mirroTree(root.right());
         }
     }
@@ -195,13 +197,13 @@ public class BinTree {
     判断一个节点是否在一颗子树中
     先根遍历,找到退出
      ==================================*/
-    public static boolean isNodeOfTree(BinNodePtr root,BinNodePtr targetNode){
+    public static boolean isNodeOfTree(BinNodePtr root, BinNodePtr targetNode) {
         if (root == null || targetNode == null)
             return false;
-        if (root == targetNode){
+        if (root == targetNode) {
             return true;
         }
-        return isNodeOfTree(root.left(),targetNode) || isNodeOfTree(root.right(),targetNode);
+        return isNodeOfTree(root.left(), targetNode) || isNodeOfTree(root.right(), targetNode);
     }
 
     /*==================================
@@ -212,35 +214,35 @@ public class BinTree {
     第二步:判断节点完全相同(这个所有节点误差的判断递归)
     这里假设数的节点时数字,元素相同即可
      ==================================*/
-    private static boolean isChildTreeCmpFun(BinNodePtr root,BinNodePtr childroot){
+    private static boolean isChildTreeCmpFun(BinNodePtr root, BinNodePtr childroot) {
         if (childroot == null)
             return true;
         //子树还有节点,大树没有节点了
         if (root == null)
             return false;
         //当前节点元素值相同
-        if (! root.element().toString().equals(childroot.element().toString()))
+        if (!root.element().toString().equals(childroot.element().toString()))
             return false;
         //左右都相同
-        return isChildTreeCmpFun(root.left(),childroot.left()) &&  isChildTreeCmpFun(root.right(),childroot.right());
+        return isChildTreeCmpFun(root.left(), childroot.left()) && isChildTreeCmpFun(root.right(), childroot.right());
     }
 
-    public static boolean isChildTree(BinNodePtr root,BinNodePtr childroot){
+    public static boolean isChildTree(BinNodePtr root, BinNodePtr childroot) {
         if (childroot == null || root == null)
             return false;
 
         boolean res = false;
         //找到根节点
-        if (root.element().toString().equals(childroot.element().toString())){
+        if (root.element().toString().equals(childroot.element().toString())) {
             //递归判断整个小树是大树的子树
-            res= isChildTreeCmpFun(root,childroot);
+            res = isChildTreeCmpFun(root, childroot);
         }
         //在左右子树中寻找相同的根节点
-        if (!res){
-            res=  isChildTree(root.left(),childroot);
+        if (!res) {
+            res = isChildTree(root.left(), childroot);
         }
-        if (!res){
-            res=  isChildTree(root.right(),childroot);
+        if (!res) {
+            res = isChildTree(root.right(), childroot);
         }
 
         return res;
@@ -261,23 +263,23 @@ public class BinTree {
         若左右中只有一个有,返回有的一方B/C;若两边都有返回当前节点A
       可见递归法需要每个节点都做左右子树的比较
      ==================================*/
-    public static  BinNodePtr getLastCommonParentRecur(BinNodePtr root,int  targetA,int targetB){
-        if(root == null)
+    public static BinNodePtr getLastCommonParentRecur(BinNodePtr root, int targetA, int targetB) {
+        if (root == null)
             return null;
         //如果找到元素,返回该元素
-        if(Integer.parseInt(root.element().toString()) == targetA
-                || Integer.parseInt(root.element().toString()) == targetB){
+        if (Integer.parseInt(root.element().toString()) == targetA
+                || Integer.parseInt(root.element().toString()) == targetB) {
             return root;
         }
         //判断该节点左右子树中的查询情况
-        BinNodePtr leftRes = getLastCommonParentRecur(root.left(),targetA,targetB);
-        BinNodePtr rightRes = getLastCommonParentRecur(root.right(),targetA,targetB);
+        BinNodePtr leftRes = getLastCommonParentRecur(root.left(), targetA, targetB);
+        BinNodePtr rightRes = getLastCommonParentRecur(root.right(), targetA, targetB);
         //若分布在左右两边,返回当前节点
         if (leftRes != null && rightRes != null) {
             return root;
         }
         //否则,返回左右中有的一方
-        return (leftRes != null ? leftRes:rightRes);
+        return (leftRes != null ? leftRes : rightRes);
     }
 
     /*==================================
@@ -293,21 +295,21 @@ public class BinTree {
         若右边没有,将该节点在路径中删除
         返回本次查询结果res
     ==================================*/
-    public static boolean getPathOfNode(BinNodePtr root,BinNodePtr targetNode,LinkedList<BinNodePtr> path){
+    public static boolean getPathOfNode(BinNodePtr root, BinNodePtr targetNode, LinkedList<BinNodePtr> path) {
         if (root == null) return false;
 
         path.offer(root);
 
-        if (root == targetNode){
+        if (root == targetNode) {
             return true;
         }
 
-        boolean res = getPathOfNode(root.left(),targetNode,path);
-        if (res == false){
-            res = getPathOfNode(root.right(),targetNode,path);
+        boolean res = getPathOfNode(root.left(), targetNode, path);
+        if (res == false) {
+            res = getPathOfNode(root.right(), targetNode, path);
         }
 
-        if (res == false){
+        if (res == false) {
             path.removeLast();
         }
         return res;
@@ -321,27 +323,180 @@ public class BinTree {
     第2个节点的path2
     循环找到最后一个公共的节点
      ==================================*/
-    public static BinNodePtr getLastCommonParent(BinNodePtr root,BinNodePtr targetNodeA,BinNodePtr targetNodeB){
-        if (root == null || targetNodeA == null || targetNodeB ==null){
+    public static BinNodePtr getLastCommonParent(BinNodePtr root, BinNodePtr targetNodeA, BinNodePtr targetNodeB) {
+        if (root == null || targetNodeA == null || targetNodeB == null) {
             return null;
         }
         LinkedList<BinNodePtr> pathA = new LinkedList<BinNodePtr>();
-        boolean isFindA  = getPathOfNode(root,targetNodeA,pathA);
+        boolean isFindA = getPathOfNode(root, targetNodeA, pathA);
 
         LinkedList<BinNodePtr> pathB = new LinkedList<BinNodePtr>();
-        boolean isFindB  = getPathOfNode(root,targetNodeB,pathB);
+        boolean isFindB = getPathOfNode(root, targetNodeB, pathB);
 
         BinNodePtr last = null;
-        if (isFindB && isFindA){
+        if (isFindB && isFindA) {
             Iterator<BinNodePtr> iterA = pathA.iterator();
             Iterator<BinNodePtr> iterB = pathB.iterator();
-            while(iterA.hasNext()  && iterB.hasNext()){
+            while (iterA.hasNext() && iterB.hasNext()) {
                 BinNodePtr temp = iterA.next();
                 if (temp == iterB.next())
                     last = temp;
             }
         }
-        return  last;
+        return last;
+    }
+
+    /*==================================
+    求任意两节点距离
+    (1)找到最低公共节点
+    (2)公共节点到第一个节点的距离 + 公共节点到第二个节点的距离
+    公共节点到第一个节点的距离递归加和(DFS)
+     ==================================*/
+    public static int getDistanceOfTwoNode(BinNodePtr startNode, BinNodePtr targetNode) {
+        if (startNode == null)
+            return -1;
+        if (startNode == targetNode)
+            return 0;
+
+        int distance = getDistanceOfTwoNode(startNode.left(),targetNode);
+        if (distance == -1){
+            distance = getDistanceOfTwoNode(startNode.right(),targetNode);
+        }
+
+        return distance + 1;
+    }
+
+    public static int getDistance(BinNodePtr root, BinNodePtr nodeA, BinNodePtr nodeB) {
+        if (root == null)
+            return -1;
+        BinNodePtr LCPNode = getLastCommonParent(root, nodeA, nodeB);
+        int distance = -1;
+        if (LCPNode != null) {
+            int distanceA = getDistanceOfTwoNode(LCPNode, nodeA);
+            int distanceB = getDistanceOfTwoNode(LCPNode, nodeA);
+            distance = distanceA + distanceB;
+        }
+        return distance;
+    }
+
+
+    /*==================================
+    和值的路径
+    从根节点开始找到所有路径，使得路径上的节点值和为某一数值（路径不一定以叶子节点结束）
+    伪代码:
+    已一个List存储路径
+    先根递归遍历
+        若经过该节点后和为sum,打印
+        遍历左子树
+        遍历右子树
+        返回上层前减去该节点
+     这里有个技巧:sum减法的方式,向下传递,不用指针方式
+     ==================================*/
+    public static void findAllPathSum(BinNodePtr root, int sum, LinkedList<BinNodePtr> path) {
+        if (root == null) return;
+
+        sum -= Integer.parseInt(root.element().toString());
+        path.offer(root);
+        if (sum <= 0) {
+            if (sum == 0) {
+                System.out.println(path);
+            }
+        }
+        findAllPathSum(root.left(), sum, path);
+        findAllPathSum(root.right(), sum, path);
+        //将该节点退出,放返回上一层
+        sum += Integer.parseInt(path.removeLast().element().toString());
+    }
+
+    /*==================================
+     二叉树第k层的节点个数
+     第k层的节点个数 = 左子树第K层节点数 + 左子树第K层节点数
+     伪代码
+     先根遍历
+         到第K层,返回1
+         return 递归左子树第K层节点数 + 左子树第K层节点数
+      ==================================*/
+    public static int getLeafNumOfKthLevel(BinNodePtr root, int k) {
+        if (root == null) return 0;
+
+        //到第K层
+        if (k == 1)
+            return 1;
+
+        int leftNum = getLeafNumOfKthLevel(root.left(), k - 1);
+        int rightNum = getLeafNumOfKthLevel(root.right(), k - 1);
+
+        return leftNum + rightNum;
+    }
+
+     /*==================================
+     二叉树前序中序推后序
+    前序	[1 2 4 7 3 5 8 9 6]
+    中序	[4 7 2 1 8 5 9 3 6]
+    后序	[7 4 2 8 9 5 6 3 1]
+    总体先序构建
+    比如root = 1
+    root.left = 由[2 4 7]递归
+    root.right = 由[8 5 9 3 6]递归
+    递归的过程中按照后续遍历打印
+    printPosOrder(arr,start,end)
+    伪代码:
+    printPosOrder
+    if start = end
+        打印左孩子
+    根据中序的信息将前序数组切分:找到切分点
+    切分点左侧数组递归printPosOrder--->会打印出左
+    切分点右侧数组递归printPosOrder--->会打印出右
+    --->打印出根
+      ==================================*/
+    public static void printPosOrder(String[] preOrderArr,int sPre, String[] midOrderArr,int sMid,int Len){
+        if (preOrderArr == null || midOrderArr == null) //输入参数检测
+            return;
+
+        if(Len == 0) return;
+
+        if (Len == 1 ){
+            System.out.print(preOrderArr[sPre] + "\t");
+            return;
+        }
+        //切分点查找
+        int len = 0;
+        for(;preOrderArr[sPre] != midOrderArr[sMid + len]; len++){
+            ;
+        }
+        //切分点左侧
+        printPosOrder(preOrderArr,sPre+1,midOrderArr,sMid,len); //打印左边
+        //切分点右侧
+        printPosOrder(preOrderArr,sPre+len + 1,midOrderArr,sMid+len+1,Len - len - 1 );//打印右边
+        System.out.print(preOrderArr[sPre]+ "\t");
+    }
+      /*==================================
+         二叉树前序中序推后序
+        前序	[1 2 4 7 3 5 8 9 6]
+        中序	[4 7 2 1 8 5 9 3 6]
+        后序	[7 4 2 8 9 5 6 3 1]
+       ====================*/
+
+    public static BinNodePtr createTreeWithPreAndMid(String[] preOrderArr,int sPre, String[] midOrderArr,int sMid,int Len){
+        if (preOrderArr == null || midOrderArr == null) //输入参数检测
+            return null;
+
+        if(Len == 0) return null;
+
+        if (Len == 1 ){
+            return new BinNodePtr(preOrderArr[sPre]);
+        }
+        //切分点查找
+        int len = 0;
+        for(;preOrderArr[sPre] != midOrderArr[sMid + len]; len++){
+            ;
+        }
+        BinNodePtr root = new BinNodePtr(preOrderArr[sPre]);
+        //切分点左侧
+        root.setLeft(createTreeWithPreAndMid(preOrderArr,sPre+1,midOrderArr,sMid,len)); //打印左边
+        //切分点右侧
+        root.setRight(createTreeWithPreAndMid(preOrderArr,sPre+len + 1,midOrderArr,sMid+len+1,Len - len - 1 ));//打印右边
+        return root;
     }
 
 
@@ -351,59 +506,98 @@ public class BinTree {
 
         //前序遍历构建二叉树,已'#'符号做null节点
         //BinNodePtr root = createBinTree();
-        String preTree= "1 2 4 # # 5 6 # # 7 # # 3 # #";
+        String preTree = "1 2 4 # # 5 6 # # 7 # # 3 # #";
         BinNodePtr root = createBinTreeWithString(preTree);
 
-        System.out.println("前序遍历:");
+        System.out.println("\n前序遍历:");
         preOrder(root);
-        System.out.println("中序遍历:");
+        System.out.println("\n中序遍历:");
         inOrder(root);
-        System.out.println("后序遍历:");
+        System.out.println("\n后序遍历:");
         postOrder(root);
-        System.out.println("层级序遍历:");
+        System.out.println("\n层级序遍历:");
         levelOrder(root);
 
         int depth = depthOfTree(root);
-        System.out.println("深度为:\t" + depth);
+        System.out.println("\n深度为:\t" + depth);
 
         int numOfLeaf = getNumOfLeaf(root);
-        System.out.println("叶子数:\t" +  numOfLeaf);
+        System.out.println("叶子数:\t" + numOfLeaf);
 
         //mirroTree(root);
         //System.out.println("镜像后的前序遍历:");
         //preOrder(root);
 
-        boolean isNodeA = isNodeOfTree(root,root.left().right());
+        boolean isNodeA = isNodeOfTree(root, root.left().right());
         BinNodePtr otherNode = new BinNodePtr(10);
-        boolean isNodeB = isNodeOfTree(root,otherNode);
-        System.out.println("是否节点判断:\n" + "\tisNodeA= "+isNodeA +"\tisNodeB= "+isNodeB  );
+        boolean isNodeB = isNodeOfTree(root, otherNode);
+        System.out.println("是否节点判断:\n" + "\tisNodeA= " + isNodeA + "\tisNodeB= " + isNodeB);
 
         //树为:1 2 4 # # 5 6 # # 7 # # 3 # #
         BinNodePtr childroot = root.left().right();
-        boolean isChTree =  isChildTree(root,childroot);
+        boolean isChTree = isChildTree(root, childroot);
         System.out.println("是否子树:" + isChTree);
         BinNodePtr otherchildroot = createBinTreeWithString("2 6 # # 5 # #");
-        isChTree =  isChildTree(root,otherchildroot);
+        isChTree = isChildTree(root, otherchildroot);
         System.out.println("是否子树:" + isChTree);
 
-        preTree= "1 2 4 # # 5 6 # # 7 # # 3 # #";
+        preTree = "1 2 4 # # 5 6 # # 7 # # 3 # #";
         root = createBinTreeWithString(preTree);
         System.out.println("递归返回最低公共祖先");
-        System.out.println(getLastCommonParentRecur(root,5,3));//返回1
-        System.out.println(getLastCommonParentRecur(root,4,5));//返回2
-        System.out.println(getLastCommonParentRecur(root,4,2));//返回2
+        System.out.println(getLastCommonParentRecur(root, 5, 3));//返回1
+        System.out.println(getLastCommonParentRecur(root, 4, 5));//返回2
+        System.out.println(getLastCommonParentRecur(root, 4, 2));//返回2
 
         LinkedList<BinNodePtr> path = new LinkedList<BinNodePtr>();
-        boolean isFind = getPathOfNode(root,root.left().right(),path);
-        if (isFind){
+        boolean isFind = getPathOfNode(root, root.left().right(), path);
+        if (isFind) {
             System.out.println("路径为:");
             System.out.println(path.toString());
         }
 
         System.out.println("非递归返回最低公共祖先:");
-        BinNodePtr last= getLastCommonParent(root,root.left().right(),root.right());
+        BinNodePtr last = getLastCommonParent(root, root.left().right(), root.right());
         System.out.println(last);
 
+        LinkedList<BinNodePtr> pathOfSum = new LinkedList<BinNodePtr>();
+        preTree = "1 2 4 1 # #  # 5 # #  3  2 # 2 # # #";
+        root = createBinTreeWithString(preTree);
+        System.out.println("从根节点开始找到所有路径，使得路径上的节点值和为某一数值（路径不一定以叶子节点结束）:");
+        findAllPathSum(root, 8, pathOfSum);
+
+        int leafNum2thLevel = getLeafNumOfKthLevel(root, 2);
+        int leafNum3thLevel = getLeafNumOfKthLevel(root, 3);
+        System.out.println("查找第2层和第三层的节点数:");
+        System.out.println("leafNum2thLevel:\t" + leafNum2thLevel);
+        System.out.println("leafNum3thLevel:\t" + leafNum3thLevel);
+
+        preTree = "1 2 4 1 # #  # 5 # #  3  2 # 2 # # #";
+        root = createBinTreeWithString(preTree);
+        int dist = getDistanceOfTwoNode(root,root.right().left().right());
+        System.out.println("一个节点到另一个节点的距离:\t" + dist);
+
+        preTree = "1 2 4 1 # #  # 5 # #  3  2 # 2 # # #";
+        root = createBinTreeWithString(preTree);
+        int distOfRand2Node = getDistance(root,root.right().left().right(),root.left().left().left());
+        System.out.println("求任意两节点距离:\t" + distOfRand2Node);
+
+        // 前序	[1 2 4 7 3 5 8 9 6]
+        // 中序	[4 7 2 1 8 5 9 3 6]
+        // 后序	[7 4 2 8 9 5 6 3 1]
+        String[] preOrderArr = {"1", "2", "4" ,"7", "3", "5","8","9","6"};
+        String[] midOrderArr = {"4", "7", "2" ,"1", "8", "5","9","3","6"};
+        System.out.println("\n------以前序和中序遍历打印后续遍历------");
+        System.out.print("打印后序遍历:");
+        printPosOrder(preOrderArr,0,midOrderArr,0,preOrderArr.length);
+
+        System.out.println("\n------以前序和中序遍历重建二叉树------");
+        root = createTreeWithPreAndMid(preOrderArr, 0, midOrderArr, 0, preOrderArr.length);
+        System.out.println("重建树的前序遍历:");
+        preOrder(root);
+        System.out.println("\n重建树的中序遍历:");
+        inOrder(root);
+        System.out.println("\n重建树的后序遍历:");
+        postOrder(root);
     }
 }
 

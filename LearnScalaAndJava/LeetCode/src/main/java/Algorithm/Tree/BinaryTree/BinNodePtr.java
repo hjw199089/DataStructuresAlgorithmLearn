@@ -62,7 +62,7 @@ public class BinNodePtr implements BinNode {
 
     //访问打印该节点
     public void visit(){
-        System.out.println(this.element);
+        System.out.print(this.element + "\t");
     }
 
     @Override
