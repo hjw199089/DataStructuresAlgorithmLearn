@@ -624,6 +624,75 @@ public class BinTree {
         }
         return isbalance;
     }
+    /*==================================
+    判定完全二叉树
+    判定一棵树是不是完全二叉树的思路是广度遍历该二叉树，当出现NULL值时停止遍历，
+    如果此时还有没有遍历到的结点，那么就说明该树非完全二叉树
+    按层遍历(层遍历,用中间缓存),当遇到null停此时还有节点在缓存中,即非完全
+    伪代码:
+        节点不为null,入队列
+        while 队列不为空
+            出对头,将左右孩子入队列
+        while 队列不为空
+            接着一直出队,若此时有一个非null的元素,返回false
+        返回true
+     ==================================*/
+    public static boolean isCompleteTree(BinNodePtr root){
+        if (root == null)
+            return true;
+        Queue<BinNodePtr> queue = new LinkedList<BinNodePtr>();
+        queue.offer(root);
+        while (queue.size() > 0){
+            BinNodePtr top = queue.poll();
+            if (top == null){
+                break;
+            }else{
+                queue.offer(top.left());
+                queue.offer(top.right());
+            }
+        }
+
+        while (queue.size() > 0){
+            if (queue.poll() != null)
+                return false;
+        }
+
+        return true;
+    }
+    /*==================================
+    求节点数
+    先根遍历不为null返
+    伪代码:
+        若为null,返回0
+        sum++
+        sum += 递归左边
+        sum += 递归右边
+        返回sum
+     ==================================*/
+    public static int getNodeNum(BinNodePtr root){
+        if (root == null)
+            return 0;
+        //int sum = 1;
+        //sum += getNodeNum(root.left());
+        //sum += getNodeNum(root.right());
+        //return sum;
+        return 1 + getNodeNum(root.left()) + getNodeNum(root.right());
+    }
+
+
+    /*==================================
+    判定满二叉树
+    k层节点数2^K -1
+    方法1: 判断上面的等式 节点数 == 2^K -1
+     ==================================*/
+    public static boolean isFullTree(BinNodePtr root){
+        if (root == null)
+            return false;
+        int depth = getDepthOfTree(root);
+        int nodeNum = getNodeNum(root);
+        return nodeNum == (2^depth - 1);
+    }
+
 
 
     public static void main(String[] args) {
@@ -739,6 +808,23 @@ public class BinTree {
         isbalance = isBalanceDirect(root);
         System.out.println("\n是否平衡(直接法):\t" + isbalance);
 
+        preTree = "1 2 # # 3 # #";//返回ture
+        preTree = "1 2  4 # #  # 3 # #";//返回ture
+        preTree = "1 2  4 # #  5 # # 3 # #";//返回ture
+        preTree = "1 2  4 # #  #  3 5 # # #";//返回false
+        root = createBinTreeWithString(preTree);
+        boolean iscmt = isCompleteTree(root);
+        System.out.println("\n是否完全二叉树:\t" + iscmt);
+
+
+        int nodeNum= getNodeNum(root);
+        System.out.println("\n树的节点数:\t" + nodeNum);
+
+        preTree = "1 2 # # 3 # #";//返回ture
+        preTree = "1 2  4 # #  # 3 # #";//返回false
+        root = createBinTreeWithString(preTree);
+        boolean isfull = isFullTree(root);
+        System.out.println("\n是否满二叉树:\t" + isfull);
     }
 }
 

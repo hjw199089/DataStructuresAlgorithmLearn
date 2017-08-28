@@ -16,6 +16,7 @@ public class QueueTest {
         Queue<String> queue = new LinkedList<String>();
         queue.offer("fist");
         queue.offer("second");
+        queue.offer("\0");
         queue.offer("third");
         String str;
         System.out.println("队列的长度:\t" + queue.size());
