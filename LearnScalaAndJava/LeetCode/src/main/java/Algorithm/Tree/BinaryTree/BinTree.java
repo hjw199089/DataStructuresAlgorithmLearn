@@ -126,10 +126,10 @@ public class BinTree {
     /\
    4  5
      ==================================*/
-    public static int depthOfTree(BinNodePtr root) {
+    public static int getDepthOfTree(BinNodePtr root) {
         //递归的结束条件
         if (root == null) return 0;
-        return Math.max(depthOfTree(root.left()) + 1, depthOfTree(root.right()) + 1);
+        return Math.max(getDepthOfTree(root.left()) + 1, getDepthOfTree(root.right()) + 1);
     }
 
 
@@ -514,7 +514,7 @@ public class BinTree {
            (*depth) =  max((*depthLeft),(*depthRight)) + 1;
            返回max(leftDist,rightDist,(*depthLeft)+(*depthRight))
      代码类似求深度,深度已引用形式逐层向上带出,返回当前节点的最远距离
-     ====================*/
+    ==================================*/
 
     private static class Depth {
         private int val;
@@ -541,22 +541,90 @@ public class BinTree {
         }
         Depth depthLeft = new Depth(0);
         Depth depthRight = new Depth(0);
-        int leftDist  = getMaxDistanceFun(root.left(), depthLeft);
-        int rightDist  = getMaxDistanceFun(root.right(), depthRight);
+        int leftDist = getMaxDistanceFun(root.left(), depthLeft);
+        int rightDist = getMaxDistanceFun(root.right(), depthRight);
         //更新深度
-        depth.setVal(Math.max(depthLeft.getVal(),depthRight.getVal()) + 1);
+        depth.setVal(Math.max(depthLeft.getVal(), depthRight.getVal()) + 1);
         //返回最远距离
-        return Math.max(Math.max(leftDist,rightDist), (depthLeft.getVal() + depthRight.getVal()) );
+        return Math.max(Math.max(leftDist, rightDist), (depthLeft.getVal() + depthRight.getVal()));
     }
 
-    public static int getMaxDistance(BinNodePtr root){
+    public static int getMaxDistance(BinNodePtr root) {
         if (root == null) {
             return 0;
         }
         Depth depth = new Depth(0);
-        int dist = getMaxDistanceFun(root,depth);
+        int dist = getMaxDistanceFun(root, depth);
         return dist;
     }
+
+    /*==================================
+    判断是否是平衡二叉树-深度法
+    原理:每个节点的左深度和右深度间平衡,递归
+    伪代码:
+    若root为空直接返回
+        左边的深度getDepthOfTree
+        右边的深度getDepthOfTree
+        判断左右平衡
+        返回: 递归左 &&  递归右
+    从上往下每个节点都要求一遍深度,有冗余
+    ==================================*/
+    public static boolean isBalanceWithDepth(BinNodePtr root) {
+        if (root == null)
+            return true;
+
+        int depthLeft = getDepthOfTree(root.left());
+        int depthRight = getDepthOfTree(root.right());
+        if (Math.abs(depthLeft - depthRight) > 1) {
+            return false;
+        }
+
+        return isBalanceWithDepth(root.left()) && isBalanceWithDepth(root.left());
+    }
+    /*==================================
+    判断是否是平衡二叉树-直接法
+    原理:在计算深度的同时判断当前节点是否平衡,若不平衡退出
+    是否平衡 = isBalanceDirect(root,)
+    伪代码:
+        若节点为null
+            返回true,
+            depth = 0
+        isL = 递归左侧 depthL
+        isR = 递归右侧 depthR
+        isblance
+        若(isL && isR)
+            isblance = 判断当前节点是否平衡
+            更新深度
+        返回isblance
+    ==================================*/
+    public static boolean isBalanceDirect(BinNodePtr root){
+        if (root == null)
+            return false;
+        int[] depth = {0};
+        return isBalanceDirectFun(root,depth);
+    }
+
+    private static boolean isBalanceDirectFun(BinNodePtr root, int[] depth) {
+        if (root == null) {
+            depth[0] = 0;
+            return true;
+        }
+        int[] depthLeft = {0};
+        int[] depthRight = {0};
+        boolean isbL = isBalanceDirectFun(root.left(), depthLeft);
+        boolean isbR = isBalanceDirectFun(root.right(), depthRight);
+
+        boolean isbalance = false;
+        if (isbL && isbR) {
+            if (Math.abs(depthLeft[0] - depthRight[0]) > 1) {
+                return false;
+            }
+            isbalance = true;
+            depth[0] = Math.max(depthLeft[0],depthRight[0]) + 1;
+        }
+        return isbalance;
+    }
+
 
     public static void main(String[] args) {
 
@@ -574,7 +642,7 @@ public class BinTree {
         System.out.println("\n层级序遍历:");
         levelOrder(root);
 
-        int depth = depthOfTree(root);
+        int depth = getDepthOfTree(root);
         System.out.println("\n深度为:\t" + depth);
 
         int numOfLeaf = getNumOfLeaf(root);
@@ -661,6 +729,15 @@ public class BinTree {
         root = createBinTreeWithString(preTree);
         int MLD = getMaxDistance(root);
         System.out.println("\n最远距离:\t" + MLD);
+
+        preTree = "1 2 # # 3 # #";//返回ture
+        //preTree = "1 2 4 9 10 # # # #  5  6  8  # # # 7 # # 3 # #";//返回false
+        root = createBinTreeWithString(preTree);
+        boolean isbalance = isBalanceWithDepth(root);
+        System.out.println("\n是否平衡(深度法):\t" + isbalance);
+
+        isbalance = isBalanceDirect(root);
+        System.out.println("\n是否平衡(直接法):\t" + isbalance);
 
     }
 }
