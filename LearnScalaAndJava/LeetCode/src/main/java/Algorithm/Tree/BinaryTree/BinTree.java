@@ -358,9 +358,9 @@ public class BinTree {
         if (startNode == targetNode)
             return 0;
 
-        int distance = getDistanceOfTwoNode(startNode.left(),targetNode);
-        if (distance == -1){
-            distance = getDistanceOfTwoNode(startNode.right(),targetNode);
+        int distance = getDistanceOfTwoNode(startNode.left(), targetNode);
+        if (distance == -1) {
+            distance = getDistanceOfTwoNode(startNode.right(), targetNode);
         }
 
         return distance + 1;
@@ -429,46 +429,46 @@ public class BinTree {
         return leftNum + rightNum;
     }
 
-     /*==================================
-     二叉树前序中序推后序
-    前序	[1 2 4 7 3 5 8 9 6]
-    中序	[4 7 2 1 8 5 9 3 6]
-    后序	[7 4 2 8 9 5 6 3 1]
-    总体先序构建
-    比如root = 1
-    root.left = 由[2 4 7]递归
-    root.right = 由[8 5 9 3 6]递归
-    递归的过程中按照后续遍历打印
-    printPosOrder(arr,start,end)
-    伪代码:
-    printPosOrder
-    if start = end
-        打印左孩子
-    根据中序的信息将前序数组切分:找到切分点
-    切分点左侧数组递归printPosOrder--->会打印出左
-    切分点右侧数组递归printPosOrder--->会打印出右
-    --->打印出根
-      ==================================*/
-    public static void printPosOrder(String[] preOrderArr,int sPre, String[] midOrderArr,int sMid,int Len){
+    /*==================================
+    二叉树前序中序推后序
+   前序	[1 2 4 7 3 5 8 9 6]
+   中序	[4 7 2 1 8 5 9 3 6]
+   后序	[7 4 2 8 9 5 6 3 1]
+   总体先序构建
+   比如root = 1
+   root.left = 由[2 4 7]递归
+   root.right = 由[8 5 9 3 6]递归
+   递归的过程中按照后续遍历打印
+   printPosOrder(arr,start,end)
+   伪代码:
+   printPosOrder
+   if start = end
+       打印左孩子
+   根据中序的信息将前序数组切分:找到切分点
+   切分点左侧数组递归printPosOrder--->会打印出左
+   切分点右侧数组递归printPosOrder--->会打印出右
+   --->打印出根
+     ==================================*/
+    public static void printPosOrder(String[] preOrderArr, int sPre, String[] midOrderArr, int sMid, int Len) {
         if (preOrderArr == null || midOrderArr == null) //输入参数检测
             return;
 
-        if(Len == 0) return;
+        if (Len == 0) return;
 
-        if (Len == 1 ){
+        if (Len == 1) {
             System.out.print(preOrderArr[sPre] + "\t");
             return;
         }
         //切分点查找
         int len = 0;
-        for(;preOrderArr[sPre] != midOrderArr[sMid + len]; len++){
+        for (; preOrderArr[sPre] != midOrderArr[sMid + len]; len++) {
             ;
         }
         //切分点左侧
-        printPosOrder(preOrderArr,sPre+1,midOrderArr,sMid,len); //打印左边
+        printPosOrder(preOrderArr, sPre + 1, midOrderArr, sMid, len); //打印左边
         //切分点右侧
-        printPosOrder(preOrderArr,sPre+len + 1,midOrderArr,sMid+len+1,Len - len - 1 );//打印右边
-        System.out.print(preOrderArr[sPre]+ "\t");
+        printPosOrder(preOrderArr, sPre + len + 1, midOrderArr, sMid + len + 1, Len - len - 1);//打印右边
+        System.out.print(preOrderArr[sPre] + "\t");
     }
       /*==================================
          二叉树前序中序推后序
@@ -477,30 +477,86 @@ public class BinTree {
         后序	[7 4 2 8 9 5 6 3 1]
        ====================*/
 
-    public static BinNodePtr createTreeWithPreAndMid(String[] preOrderArr,int sPre, String[] midOrderArr,int sMid,int Len){
+    public static BinNodePtr createTreeWithPreAndMid(String[] preOrderArr, int sPre, String[] midOrderArr, int sMid, int Len) {
         if (preOrderArr == null || midOrderArr == null) //输入参数检测
             return null;
 
-        if(Len == 0) return null;
+        if (Len == 0) return null;
 
-        if (Len == 1 ){
+        if (Len == 1) {
             return new BinNodePtr(preOrderArr[sPre]);
         }
         //切分点查找
         int len = 0;
-        for(;preOrderArr[sPre] != midOrderArr[sMid + len]; len++){
+        for (; preOrderArr[sPre] != midOrderArr[sMid + len]; len++) {
             ;
         }
         BinNodePtr root = new BinNodePtr(preOrderArr[sPre]);
         //切分点左侧
-        root.setLeft(createTreeWithPreAndMid(preOrderArr,sPre+1,midOrderArr,sMid,len)); //打印左边
+        root.setLeft(createTreeWithPreAndMid(preOrderArr, sPre + 1, midOrderArr, sMid, len)); //打印左边
         //切分点右侧
-        root.setRight(createTreeWithPreAndMid(preOrderArr,sPre+len + 1,midOrderArr,sMid+len+1,Len - len - 1 ));//打印右边
+        root.setRight(createTreeWithPreAndMid(preOrderArr, sPre + len + 1, midOrderArr, sMid + len + 1, Len - len - 1));//打印右边
         return root;
     }
 
+    /*==================================
+       二叉树节点最远距离
+       最远距离 = max{ (左孩子的深度 + 右孩子深度), 左边最远距离, 右边最远距离}
+      int[最远距离] getMaxDistance(BinNodePtr root,int &depth)
+      伪代码:
+      前序递归
+          到null
+              depth = 0
+              return 0
+           int depthLeft, int depthRight
+           int leftDist  = getMaxDistance(root.left, &depthLeft); 递归左侧
+           int rightDist = getMaxDistance(root.right,&depthRith); 递归右侧
+           (*depth) =  max((*depthLeft),(*depthRight)) + 1;
+           返回max(leftDist,rightDist,(*depthLeft)+(*depthRight))
+     代码类似求深度,深度已引用形式逐层向上带出,返回当前节点的最远距离
+     ====================*/
 
+    private static class Depth {
+        private int val;
 
+        public Depth(int val) {
+            this.val = val;
+        }
+
+        public void setVal(int val) {
+            this.val = val;
+        }
+
+        public int getVal() {
+            return val;
+        }
+    }
+
+    private static int getMaxDistanceFun(BinNodePtr root, Depth depth) {
+        if (root == null) {
+            //更新深度
+            depth.setVal(0);
+            //返回最远距离0
+            return 0;
+        }
+        Depth depthLeft = new Depth(0);
+        Depth depthRight = new Depth(0);
+        int leftDist  = getMaxDistanceFun(root.left(), depthLeft);
+        int rightDist  = getMaxDistanceFun(root.right(), depthRight);
+        //更新深度
+        depth.setVal(Math.max(depthLeft.getVal(),depthRight.getVal()) + 1);
+        //返回最远距离
+        return Math.max(Math.max(leftDist,rightDist), (depthLeft.getVal() + depthRight.getVal()) );
+    }
+
+    public static int getMaxDistance(BinNodePtr root){
+        if (root == null) {
+            return 0;
+        }
+        Depth depth = new Depth(0);
+        int dist = getMaxDistanceFun(root,depth);
+        return dist;
+    }
 
     public static void main(String[] args) {
 
@@ -573,22 +629,22 @@ public class BinTree {
 
         preTree = "1 2 4 1 # #  # 5 # #  3  2 # 2 # # #";
         root = createBinTreeWithString(preTree);
-        int dist = getDistanceOfTwoNode(root,root.right().left().right());
+        int dist = getDistanceOfTwoNode(root, root.right().left().right());
         System.out.println("一个节点到另一个节点的距离:\t" + dist);
 
         preTree = "1 2 4 1 # #  # 5 # #  3  2 # 2 # # #";
         root = createBinTreeWithString(preTree);
-        int distOfRand2Node = getDistance(root,root.right().left().right(),root.left().left().left());
+        int distOfRand2Node = getDistance(root, root.right().left().right(), root.left().left().left());
         System.out.println("求任意两节点距离:\t" + distOfRand2Node);
 
         // 前序	[1 2 4 7 3 5 8 9 6]
         // 中序	[4 7 2 1 8 5 9 3 6]
         // 后序	[7 4 2 8 9 5 6 3 1]
-        String[] preOrderArr = {"1", "2", "4" ,"7", "3", "5","8","9","6"};
-        String[] midOrderArr = {"4", "7", "2" ,"1", "8", "5","9","3","6"};
+        String[] preOrderArr = {"1", "2", "4", "7", "3", "5", "8", "9", "6"};
+        String[] midOrderArr = {"4", "7", "2", "1", "8", "5", "9", "3", "6"};
         System.out.println("\n------以前序和中序遍历打印后续遍历------");
         System.out.print("打印后序遍历:");
-        printPosOrder(preOrderArr,0,midOrderArr,0,preOrderArr.length);
+        printPosOrder(preOrderArr, 0, midOrderArr, 0, preOrderArr.length);
 
         System.out.println("\n------以前序和中序遍历重建二叉树------");
         root = createTreeWithPreAndMid(preOrderArr, 0, midOrderArr, 0, preOrderArr.length);
@@ -598,6 +654,14 @@ public class BinTree {
         inOrder(root);
         System.out.println("\n重建树的后序遍历:");
         postOrder(root);
+
+        preTree = "1 2 4 # #  5 # #  3  # #"; //返回3
+        preTree = "1 2 4 # # #  3 # #";//返回3
+        preTree = "1 2 4 9 10 # # # #  5  6  8  # # # 7 # # 3 # #";//返回6
+        root = createBinTreeWithString(preTree);
+        int MLD = getMaxDistance(root);
+        System.out.println("\n最远距离:\t" + MLD);
+
     }
 }
 
