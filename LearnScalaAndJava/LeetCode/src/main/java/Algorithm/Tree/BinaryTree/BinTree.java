@@ -692,7 +692,113 @@ public class BinTree {
         int nodeNum = getNodeNum(root);
         return nodeNum == (2^depth - 1);
     }
+    /*==================================
+    判断是否是二叉查找树
+    前序对每一个节点满足 左<当前<右
+    ==================================*/
+    public static  boolean isBSTV1(BinNodePtr root){
+        if (root == null) return true;
 
+        boolean res = true;
+        if (root.left() != null){
+           if(Integer.parseInt(root.element().toString()) < Integer.parseInt(root.left().element().toString()))
+               return false;
+            else
+               res = isBSTV1(root.left());
+        }else if(root.right() != null){
+            return false;
+        }
+
+        if (!res ){
+            if(Integer.parseInt(root.element().toString()) > Integer.parseInt(root.right().element().toString()))
+                return false;
+            res = isBSTV1(root.left());
+        }
+
+        return res;
+    }
+
+
+    /*==================================
+    判断是否是二叉查找树
+     min < 当前节点 < max
+     对于左子树
+        MIN  < root.left < root
+     对于右子树
+        root < root.right < MAX
+     ==================================*/
+    private static  boolean isBSTFun(BinNodePtr root,int min,int max){
+        if (root == null)
+            return true;
+        int rootVal = Integer.parseInt(root.element().toString());
+        if (rootVal < min ||rootVal > max)
+            return false;
+        return isBSTFun(root.left(),min,rootVal) && isBSTFun(root.right(),rootVal,max);
+    }
+    public static boolean isBSTV2(BinNodePtr root){
+        if (root == null)
+            return true;
+        int MAX = Integer.MAX_VALUE;
+        int MIN = Integer.MIN_VALUE;
+        return isBSTFun(root,MIN,MAX);
+    }
+
+    /*==================================
+    二分查找树转化为排序的循环双链表
+    二叉查找树（Binary Search Tree），
+    也称有序二叉树（ordered binary tree）,
+    排序二叉树（sorted binary tree），
+    是指一棵空树或者具有下列性质的二叉树：
+        若任意节点的左子树不空，则左子树上所有结点的值均小于它的根结点的值；
+        任意节点的右子树不空，则右子树上所有结点的值均大于它的根结点的值；
+        任意节点的左、右子树也分别为二叉查找树。
+        没有键值相等的节点（no duplicate nodes）
+            4
+           /\
+          2 5
+         /\
+        1 3
+        null<-左-- 1<--左--2 <--左--3<--左--4<--左--5
+                    --右-->  --右--> --右--> --右--> --右-->null
+      中序遍历
+      上一个元素Pre的右指针指向当前
+      当前cur的左指针指向上一个元素
+      BinNodePtr  BST2SotredList(BinNodePtr cur)
+      伪代码:
+      BST2SotredListFun(BinNodePtr cur,BinNodePtr pre)
+      BST2SotredListFun(root,null)
+      整理是中序遍历
+
+      若cur为NULL 返回;
+      BST2SotredListFun(root.left,pre)
+        cur.left--> pre
+        若(pre != null)
+            pre.right-->cur
+        pre = cur
+      BST2SotredListFun(root.right,pre)
+     ==================================*/
+     public static BinNodePtr  BST2SotredList(BinNodePtr root){
+         if (root == null)
+             return null;
+         BinNodePtr[] pre = {null};
+         BST2SotredListFun(root,pre);
+         BinNodePtr head = root;
+         //找到链表的头
+         while(head.left() != null){
+             head = head.left();
+         }
+         return head;
+     }
+    public static void  BST2SotredListFun(BinNodePtr cur,BinNodePtr[] pre){
+        if (cur == null)
+            return;
+        BST2SotredListFun(cur.left(),pre);
+        cur.setLeft(pre[0]);
+        if (pre[0] != null)
+            pre[0].setRight(cur);
+        pre[0] = cur;
+        BST2SotredListFun(cur.right(),pre);
+    }
 
 
     public static void main(String[] args) {
@@ -825,6 +931,25 @@ public class BinTree {
         root = createBinTreeWithString(preTree);
         boolean isfull = isFullTree(root);
         System.out.println("\n是否满二叉树:\t" + isfull);
+
+        preTree = "2  1 # # 3 # #";//返回ture
+        root = createBinTreeWithString(preTree);
+        boolean isbst = isBSTV1(root);
+        System.out.println("\n是否搜索二叉树:\t" +isbst);
+
+        isbst = isBSTV2(root);
+        System.out.println("\n是否搜索二叉树:\t" +isbst);
+
+        preTree = "4  2 1  # # 3 # # 5 # #";
+        root = createBinTreeWithString(preTree);
+        BinNodePtr head = BST2SotredList(root);
+        BinNodePtr p = head;
+        while(p!=null){
+            System.out.print("--->"+p.element().toString());
+            p = p.right();
+        }
+
+
     }
 }
 
