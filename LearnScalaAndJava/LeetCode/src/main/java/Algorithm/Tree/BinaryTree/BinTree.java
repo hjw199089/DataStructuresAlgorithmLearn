@@ -879,7 +879,47 @@ public class BinTree {
         }
         return width;
     }
+    /*==================================
+    二叉树中的最大路径和(全局变量的思量在里面,递归的返回值不一定就是所求值)
+                            当前
+                            /  \
+            (左边)到叶子的最大值     (右边边)到叶子的最大值     全局最大值
+    伪代码:
+    整理后续遍历
+    当前节点此时的全局最大值 = ?
+    左边最叶子的最大值 + 当前, 右边最叶子的最大值 + 当前, 左边最叶子的最大值 + 当前 + 右边最叶子的最大值
+    返回当前节点到叶子的最大值
 
+    Given a binary tree, find the maximum path sum.
+    The path may start and end at any node in the tree.
+    For example: Given the below binary tree,
+
+       1
+      / \
+     2   3
+    Return 6.
+     ==================================*/
+    private static int MaxPathSumFun(BinNodePtr root,int[] globalMax){
+        if (root == null)
+            return 0;
+        int LMaxSum2Leaf = MaxPathSumFun(root.left(),globalMax);
+        int RMaxSum2Leaf = MaxPathSumFun(root.right(),globalMax);
+
+        int rootVal = Integer.parseInt(root.element().toString());
+        int MaxSum2Leaf  =  Math.max( Math.max( (LMaxSum2Leaf + rootVal) , (RMaxSum2Leaf + rootVal))
+                , rootVal);
+        int curMax = Math.max(MaxSum2Leaf,LMaxSum2Leaf + RMaxSum2Leaf + rootVal);
+        globalMax[0] = Math.max(globalMax[0],curMax);
+        return MaxSum2Leaf;
+    }
+
+    public static int MaxPathSum(BinNodePtr root){
+        if (root == null)
+            return 0;
+        int[] globalMax = {0};//当做指针
+        MaxPathSumFun(root,globalMax);
+        return globalMax[0];
+    }
 
     public static void main(String[] args) {
 
@@ -1053,6 +1093,11 @@ public class BinTree {
 
         int width= getWidthOfTree(root);
         System.out.println("\n宽度为:" + width);//4
+
+        preTree = "1 2 # # 3 # #";
+        root = createBinTreeWithString(preTree);
+        int sum =  MaxPathSum(root);
+        System.out.println("\n二叉树中的最大路径和为:" + sum);
     }
 }
 
