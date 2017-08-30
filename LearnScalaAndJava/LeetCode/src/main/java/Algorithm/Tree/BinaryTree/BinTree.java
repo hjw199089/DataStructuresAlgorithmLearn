@@ -1,5 +1,7 @@
 package Algorithm.Tree.BinaryTree;
 
+import Algorithm.List.List;
+import Algorithm.List.ListNode;
 import scala.Int;
 
 import java.io.Console;
@@ -799,6 +801,84 @@ public class BinTree {
         pre[0] = cur;
         BST2SotredListFun(cur.right(),pre);
     }
+    /*==================================
+    给定一个升序排列的有序单链表，将其转换为一棵平衡的二叉搜索树。
+    比较直观的解法是自顶向下的递归解决，先找到中间节点作为根节点，然后递归左右两部分。
+    所有我们需要先找到中间节点，对于单链表来说，必须要遍历一边，可以使用快慢指针加快查找速度。
+    BinNodePtr res = sotredList2BST(ListNode  head)
+    伪代码:
+    若head 或者 head的next为null,返回head
+    root = 找到中间元素构建,(slow,fast),返回slow,
+    递归左半部分:root.left  = sotredList2BST(head)
+    递归右半部分:root.right = sotredList2BST(slow.next)
+    返回root
+    ================================== */
+    public static BinNodePtr sotredList2BSTFun(ListNode head,ListNode tail){
+        if (head == null)
+            return null;
+
+        ListNode midNode = List.getMidNodeOfList(head,tail);
+        BinNodePtr root = null;
+        if (midNode != null){
+            root  = new BinNodePtr(midNode.getElement());
+            root.setLeft(sotredList2BSTFun(head,midNode));
+            root.setRight(sotredList2BSTFun(midNode.getNext(),tail));
+        }
+
+        return root;
+    }
+
+    public static BinNodePtr sotredList2BST(ListNode head){
+        if (head == null)
+            return null;
+        BinNodePtr root = sotredList2BSTFun(head,null);
+        return root;
+    }
+    /*==================================
+    求二叉树的宽度
+    按层遍历,记录该层的节点数 与 max 比较: max= Math.max(节点数,max)
+    getWidthOfTree(BinNodePtr root)
+    伪代码:
+    总体类似按层遍历
+    curLevelNum = 1;max = 1
+    nextLevelNum = 0
+    队列将元素入队
+    当队列不为空
+        若curLevelNum != 0 将队列中的元素出队,同时记录nextLevelNum
+        若curLevelNum = 0,
+            将 max = Math.max(nextLevelNum和max)
+            curLevelNum = nextLevelNum
+            nextLevelNum = 0
+     ==================================*/
+    public static int  getWidthOfTree(BinNodePtr root){
+        if (root == null)
+            return 0;
+        int curLevelNum = 1;
+        int width = 1;
+        int nextLevelNum = 0;
+        Queue<BinNodePtr> queue = new LinkedList<BinNodePtr>();
+        queue.offer(root);
+        while(queue.size() != 0){
+            if(curLevelNum == 0){
+                width = Math.max(nextLevelNum,width);
+                curLevelNum = nextLevelNum;
+                nextLevelNum = 0;
+            }
+
+            BinNodePtr top = queue.poll();
+            curLevelNum--;
+
+            if (top.left() != null){
+                queue.offer(top.left());
+                nextLevelNum++;
+            }
+            if (top.right() != null){
+                queue.offer(top.right());
+                nextLevelNum++;
+            }
+        }
+        return width;
+    }
 
 
     public static void main(String[] args) {
@@ -945,11 +1025,34 @@ public class BinTree {
         BinNodePtr head = BST2SotredList(root);
         BinNodePtr p = head;
         while(p!=null){
-            System.out.print("--->"+p.element().toString());
+            System.out.print(p.element().toString()+"--->");
             p = p.right();
         }
+        System.out.print("NULL");
 
 
+        System.out.println("\n\n------给定一个升序排列的有序单链表，将其转换为一棵平衡的二叉搜索树------");
+        //        输入：1 2 3 4 5 6 7 8 9 0
+        //        输出：5 2 7 1 3 6 8 4 9
+        //
+        //        所构造的AVL是：
+        //                   5
+        //                  /   \
+        //                 2     7
+        //                / \   / \
+        //                1  3  6  8
+        //                    \     \
+        //                    4     9
+        String[] listStr = {"1","2","3","4","5","6","7","8","9"};
+        ListNode listHead = List.createNodeWithString(listStr);
+        System.out.println("排序链表为:");
+        List.printList(listHead);
+        root = sotredList2BST(listHead);
+        System.out.println("\n层级序遍历:");
+        levelOrder(root);
+
+        int width= getWidthOfTree(root);
+        System.out.println("\n宽度为:" + width);//4
     }
 }
 
