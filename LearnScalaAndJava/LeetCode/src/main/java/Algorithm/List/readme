@@ -1,5 +1,6 @@
 【2】链表相关算法学习
 查找中间节点:快慢指针法
+返回第K个节点,当K= -1时返回最后一个非空节点
 翻转链表
 从尾到头打印单链表-stack
 从尾到头打印单链表-no stack
@@ -7,9 +8,7 @@
 判断一个单链表中是否有环
 判断两个单链表是否相交
 求两个单链表相交的第一个节点
+已知一个单链表中存在环，求进入环中的第一个节点
+给出一单链表头指针pHead和一节点指针pToBeDeleted，O(1)时间复杂度删除节点pToBeDeleted
+待续....
 
-http://blog.csdn.net/luckyxiaoqiang/article/details/7393134
-
-
-10. 已知一个单链表中存在环，求进入环中的第一个节点
-11. 给出一单链表头指针pHead和一节点指针pToBeDeleted，O(1)时间复杂度删除节点pToBeDeleted
