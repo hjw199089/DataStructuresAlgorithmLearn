@@ -52,9 +52,9 @@ public class Sort {
             return;
         int i, j;
         for (i = 1; i < len; i++) {
-            if (inArr[i] < inArr[i -1]){
+            if (inArr[i] < inArr[i - 1]) {
                 int temp = inArr[i];
-                inArr[i] = inArr[i-1];
+                inArr[i] = inArr[i - 1];
                 for (j = i - 2; j >= 0 && inArr[j] > temp; j--) {
                     inArr[j + 1] = inArr[j];
                 }
@@ -62,6 +62,7 @@ public class Sort {
             }
         }
     }
+
     /*
     希尔排序
     平均:O(n^1.3)
@@ -69,16 +70,15 @@ public class Sort {
     最好:
     稳定性:不稳定
      */
-    private static void ShellInsert(int inArr[], int len, int delt)
-    {
+    private static void ShellInsert(int inArr[], int len, int delt) {
         if (inArr == null || len <= 1)
             return;
         int i, j;
         for (i = delt; i < len; i++) {
-            if (inArr[i] < inArr[i -delt]){
+            if (inArr[i] < inArr[i - delt]) {
                 int temp = inArr[i];
-                inArr[i] = inArr[i-delt];
-                for (j = i - 2*delt; j >= 0 && inArr[j] > temp; j = j - delt) {
+                inArr[i] = inArr[i - delt];
+                for (j = i - 2 * delt; j >= 0 && inArr[j] > temp; j = j - delt) {
                     inArr[j + delt] = inArr[j];
                 }
                 inArr[j + delt] = temp;
@@ -86,15 +86,78 @@ public class Sort {
         }
     }
 
-    public  static  void ShellSort(int inArr[], int len, int delt[],int deltLen)
-    {
-        for(int i = 0; i < deltLen; i++){
-            ShellInsert(inArr,len,delt[i]);
-            System.out.print("\t第" + (i+1) + "轮希尔排序后的结果:\t");
+    public static void ShellSort(int inArr[], int len, int delt[], int deltLen) {
+        for (int i = 0; i < deltLen; i++) {
+            ShellInsert(inArr, len, delt[i]);
+            System.out.print("\t第" + (i + 1) + "轮希尔排序后的结果:\t");
             print(inArr);
         }
 
     }
+
+    /*
+    选择排序
+    平均:O(n^2)
+    最坏:O(n^2)
+    最好:O(n^2)
+    稳定性:不稳定
+     */
+    public static void selectSort(int inArr[], int len) {
+        if (inArr == null || len <= 1)
+            return;
+
+        int i, j, minloc;
+        for (i = 0; i < len - 1; i++) {
+            minloc = i;
+            for (j = i + 1; j < len; j++) {
+                if (inArr[minloc] > inArr[j])
+                    minloc = j;//找到最小者的位置
+            }
+            if (minloc != i) {
+                inArr[minloc] = inArr[minloc] ^ inArr[i];
+                inArr[i] = inArr[minloc] ^ inArr[i];
+                inArr[minloc] = inArr[minloc] ^ inArr[i];
+            }
+        }
+    }
+
+    /*
+    快排
+    平均:O(nlogn)
+    最坏:O(n^2)
+    最好:O(nlogn)
+    稳定性:不稳定
+     */
+    private static int  partationFun(int inArr[], int low, int high){
+        int pivotloc = inArr[low];
+        while (low<high){
+            while(high > low && inArr[high] > pivotloc){
+                high--;
+            }
+            inArr[low] = inArr[high];
+            while (high > low && inArr[low] < pivotloc){
+                low++;
+            }
+            inArr[high] = inArr[low];
+        }
+        inArr[low] = pivotloc;
+        return low;
+    }
+
+    private static void quickSortFun(int inArr[], int low, int high) {
+        int pivotloc;
+        if (low < high) {//长度>1
+            pivotloc = partationFun(inArr,low,high);//二分
+            quickSortFun(inArr, low, pivotloc - 1);
+            quickSortFun(inArr, pivotloc + 1,high);
+        }
+    }
+    public static void quickSort(int inArr[], int len) {
+        if (inArr == null || len <= 1)
+            return;
+        quickSortFun(inArr,0,len-1);
+    }
+
 
     public static void main(String[] args) {
         int[] in = {3, 4, 2, 1, 6, 8, 7};
@@ -108,8 +171,18 @@ public class Sort {
         print(in);
 
         in = new int[]{3, 4, 2, 1, 6, 8, 7};
-        int[] deltaArr = {3,1};
+        int[] deltaArr = {3, 1};
         System.out.println("希尔排序:");
-        ShellSort(in,in.length,deltaArr,deltaArr.length);
+        ShellSort(in, in.length, deltaArr, deltaArr.length);
+
+        in = new int[]{3, 4, 2, 1, 6, 8, 7};
+        selectSort(in, in.length);
+        System.out.print("选择排序:\t");
+        print(in);
+
+        in = new int[]{3, 4, 2, 1, 6, 8, 7};
+        quickSort(in, in.length);
+        System.out.print("快速排序:\t");
+        print(in);
     }
 }
