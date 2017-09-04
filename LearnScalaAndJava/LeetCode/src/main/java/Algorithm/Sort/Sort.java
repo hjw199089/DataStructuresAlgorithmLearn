@@ -128,14 +128,14 @@ public class Sort {
     最好:O(nlogn)
     稳定性:不稳定
      */
-    private static int  partationFun(int inArr[], int low, int high){
+    private static int partationFun(int inArr[], int low, int high) {
         int pivotloc = inArr[low];
-        while (low<high){
-            while(high > low && inArr[high] > pivotloc){
+        while (low < high) {
+            while (high > low && inArr[high] > pivotloc) {
                 high--;
             }
             inArr[low] = inArr[high];
-            while (high > low && inArr[low] < pivotloc){
+            while (high > low && inArr[low] < pivotloc) {
                 low++;
             }
             inArr[high] = inArr[low];
@@ -147,15 +147,97 @@ public class Sort {
     private static void quickSortFun(int inArr[], int low, int high) {
         int pivotloc;
         if (low < high) {//长度>1
-            pivotloc = partationFun(inArr,low,high);//二分
+            pivotloc = partationFun(inArr, low, high);//二分
             quickSortFun(inArr, low, pivotloc - 1);
-            quickSortFun(inArr, pivotloc + 1,high);
+            quickSortFun(inArr, pivotloc + 1, high);
         }
     }
+
     public static void quickSort(int inArr[], int len) {
         if (inArr == null || len <= 1)
             return;
-        quickSortFun(inArr,0,len-1);
+        quickSortFun(inArr, 0, len - 1);
+    }
+
+    /*
+    归并排序
+    平均:O(nlogn)
+    最坏:O(nlogn)
+    最好:O(nlogn)
+    稳定性:稳定
+     */
+    //C/C++版本
+    /*    void  Merge(int List1[], int List1_size, int List2[], int List2_size)
+        {//将SR[s..m]和SR[m+1..t]归并到TR[s...t]
+            int i,j,k;
+            int temp[10];
+            i = j = k = 0;
+            while(i < List1_size && j < List2_size)
+            {
+                if(List1[i] > List2[j]) temp[k++] = List2[j++];
+                else  temp[k++] = List1[i++];
+            }
+            while(i < List1_size)
+            {
+                temp[k++] =  List1[i++];
+            }
+            while(j < List2_size)
+            {
+                temp[k++] =  List2[j++];
+            }
+            for(i = 0; i < k; i++)
+            {
+                List1[i] = temp[i];
+            }
+        }
+        void MergeSort(int k[], int Len)
+        {
+            if(Len > 1)
+            {
+                int *List1 = k;
+                int  List1_size = Len/2;
+                int *List2 = k + Len/2;
+                int List2_size = Len-List1_size;
+                MergeSort(List1,List1_size);
+                MergeSort(List2,List2_size);
+                Merge(List1, List1_size, List2,List2_size );
+            }
+        }
+      */
+    public static void mergeFun(int inArr[], int start, int mid, int end) {
+        int[] temp = new int[end - start + 1];
+        int i = start;
+        int j = mid + 1;
+        int k = 0;
+        while (i <= mid && j <= end) {
+            if (inArr[i] < inArr[j]) {
+                temp[k++] = inArr[i++];
+            } else {
+                temp[k++] = inArr[j++];
+            }
+        }
+        while (i <= mid) {
+            temp[k++] = inArr[i++];
+        }
+        while (j <= end) {
+            temp[k++] = inArr[j++];
+        }
+
+        for (i = 0; i < k; i++) {
+            inArr[start + i] = temp[i];
+        }
+
+    }
+
+    public static void mergeSort(int inArr[], int start, int end) {
+        if (inArr == null)
+            return;
+        if (start < end) {
+            int mid = (start + end) >> 1;
+            mergeSort(inArr, start, mid);
+            mergeSort(inArr, mid + 1, end);
+            mergeFun(inArr, start, mid, end);
+        }
     }
 
 
@@ -183,6 +265,11 @@ public class Sort {
         in = new int[]{3, 4, 2, 1, 6, 8, 7};
         quickSort(in, in.length);
         System.out.print("快速排序:\t");
+        print(in);
+
+        in = new int[]{3, 4, 2, 1, 6, 8, 7};
+        mergeSort(in, 0, in.length - 1);
+        System.out.print("归并排序:\t");
         print(in);
     }
 }
