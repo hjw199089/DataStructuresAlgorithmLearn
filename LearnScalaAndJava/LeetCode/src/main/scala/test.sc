@@ -1,6 +1,1 @@
-if("dim1".matches("dim*")){
-  print("yes")
-}else
-{
-  print("no")
-}
+var i = 0 until 10

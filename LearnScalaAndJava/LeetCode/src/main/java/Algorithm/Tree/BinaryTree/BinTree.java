@@ -283,7 +283,6 @@ public class BinTree {
         //否则,返回左右中有的一方
         return (leftRes != null ? leftRes : rightRes);
     }
-
     /*==================================
     到某个节点的路径
     先序遍历,用队列(LinkList存储)
@@ -361,7 +360,7 @@ public class BinTree {
             return 0;
 
         int distance = getDistanceOfTwoNode(startNode.left(), targetNode);
-        if (distance == -1) {
+        if (distance == -1) {//先根遍历,左边没找到才找右边
             distance = getDistanceOfTwoNode(startNode.right(), targetNode);
         }
 
