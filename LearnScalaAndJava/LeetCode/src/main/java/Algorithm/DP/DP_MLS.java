@@ -52,6 +52,5 @@ MaxLen (k) = Max { MaxLen (i)：1<i < k 且 ai < ak 且 k≠1 } + 1
         int [] inArr = {1 ,7 ,3 ,5 ,9 ,4 ,8};
         int mls = maxMLS(inArr);
         System.out.println("最长上升子序列的长度 = " + mls);
-
     }
 }

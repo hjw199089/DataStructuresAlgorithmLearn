@@ -2,13 +2,8 @@ package Algorithm.Tree.BinaryTree;
 
 import Algorithm.List.List;
 import Algorithm.List.ListNode;
-import scala.Int;
 
-import java.io.Console;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by hjw on 17/8/26.
@@ -64,7 +59,7 @@ public class BinTree {
                 //构建右子树
                 root.setRight(createTreeWithString(index, preOrderArr, len));
             } else {
-                index.val++;
+                index.val++;//跳过#
             }
         }
         return root;
@@ -89,6 +84,9 @@ public class BinTree {
         preOrder(root.left());
         preOrder(root.right());
     }
+
+
+
 
     /*==================================
     中序遍历
@@ -131,7 +129,7 @@ public class BinTree {
     public static int getDepthOfTree(BinNodePtr root) {
         //递归的结束条件
         if (root == null) return 0;
-        return Math.max(getDepthOfTree(root.left()) + 1, getDepthOfTree(root.right()) + 1);
+        return Math.max(getDepthOfTree(root.left()) , getDepthOfTree(root.right()) ) + 1;
     }
 
 
@@ -920,6 +918,147 @@ public class BinTree {
         return globalMax[0];
     }
 
+    /*==================================
+    先序遍历非递归实现
+    1) 访问结点 P,并将结点 P 入栈;
+    2) 判断结点 P 的左孩子是否为空,若为空,则取栈顶结点并进行出栈操作,并将栈顶结点
+    的右孩子置为当前的结点 P,循环至 1);若不为空,则将 P 的左孩子置为当前的结点 P;
+    3) 直到 P 为 NULL 并且栈为空,则遍历结束。
+    把访问过的储存起来,转到存的元素的右孩子
+    Recursive 递归
+    Iterative 循环
+    伪代码
+    整体是先序,访问该节点,存他的左右孩子
+     ==================================*/
+    public static void preOrderIterative(BinNodePtr root){
+        if (root == null)
+            return;
+        Stack<BinNodePtr> stack = new Stack();
+
+        while(stack.size() > 0 || root != null){
+            if (root != null){
+                System.out.print(root.element() + "--->");
+                stack.add(root);
+                root = root.left();//继续前序遍历
+            }else{
+                root = stack.pop();
+                //转到右边去,栈的主要目的就是知道转到哪个元素的后边去
+                root = root.right();
+            }
+        }
+        System.out.println("NULL");
+    }
+
+    /*==================================
+   中序遍历非递归实现
+   1) 并将结点 P 入栈;
+   2) 判断结点 P 的左孩子是否为空,若为空,则取栈顶结点并进行出栈操作,访问该节点,并将栈顶结点
+   的右孩子置为当前的结点 P,循环至 1);若不为空,则将 P 的左孩子置为当前的结点 P;
+   3) 直到 P 为 NULL 并且栈为空,则遍历结束。
+   把访问过的储存起来,转到存的元素的右孩子
+   Recursive 递归
+   Iterative 循环
+   伪代码
+   整体是先序,出栈访问该节点,存他的左右孩子
+    ==================================*/
+    public static void idOrderIterative(BinNodePtr root){
+        if (root == null)
+            return;
+        Stack<BinNodePtr> stack = new Stack();
+
+        while(stack.size() > 0 || root != null){
+            if (root != null){
+                stack.add(root);
+                root = root.left();//继续前序遍历
+            }else{
+                root = stack.pop();
+                System.out.print(root.element() + "--->");
+                //转到右边去,栈的主要目的就是知道转到哪个元素的后边去
+                root = root.right();
+            }
+        }
+        System.out.println("NULL");
+    }
+
+    /*==================================
+   后序遍历非递归实现
+   对于后序遍历，首先遍历左子树，然后是右子树，最后才是根节点。
+   当遍历到一个节点的时候，
+   首先我们将右子树压栈，然后将左子树压栈。
+   这里需要注意一下出栈的规则，对于叶子节点来说，直接可以出栈，
+   但是对于根节点来说，我们需要一个变量记录上一次出栈的节点
+   如果上一次出栈的节点是该根节点的左子树或者右子树，那么该根节点可以出栈，
+   否则这个根节点是新访问的节点，将右和左子树分别压栈。
+   ==================================*/
+
+    public static void  postOrderIterative(BinNodePtr root){
+        if (root == null)
+            return;
+        Stack<BinNodePtr> stack = new Stack();
+        BinNodePtr pre = root;
+        stack.add(root);
+        while(stack.size() > 0){
+            root = stack.peek();
+            //若为叶子,直接访问,判断上一次访问的是不是他的叶子
+            if (root.isLeaf() || pre == root.left() || pre == root.right()){
+                System.out.print(root.element() + "--->");
+                pre = stack.pop();
+            }else{
+                if (root.right() != null){
+                    stack.add(root.right());
+                }
+                if (root.left() != null){
+                    stack.add(root.left());
+                }
+            }
+        }
+        System.out.println("NULL");
+    }
+
+   /*==================================
+   后序遍历非递归实现
+   第二次访问时才可输出
+   ==================================*/
+    public static void  postOrderIterativeV2(BinNodePtr root){
+        if (root == null)
+            return;
+        class Node{
+            BinNodePtr val;
+            boolean isTwiceVisited;
+
+            public Node(BinNodePtr val, boolean isTwiceVisited) {
+                this.val = val;
+                this.isTwiceVisited = isTwiceVisited;
+            }
+        }
+
+        Stack<Node> stack = new Stack();
+
+        while(stack.size() > 0 || root != null){
+            if (root != null){
+                stack.add(new Node(root,false));
+                root = root.left();//继续前序遍历
+            }else{
+                Node node = stack.peek();
+                if (node.isTwiceVisited == true){
+                    System.out.print(node.val.element() + "--->");
+                    stack.pop();
+                }else {
+                    node.isTwiceVisited = true;
+                    //转到右边去,栈的主要目的就是知道转到哪个元素的后边去
+                    root = node.val.right();
+                }
+            }
+        }
+        System.out.println("NULL");
+    }
+
+
+
+
+
+
+
     public static void main(String[] args) {
 
         //前序遍历构建二叉树,已'#'符号做null节点
@@ -1097,6 +1236,22 @@ public class BinTree {
         root = createBinTreeWithString(preTree);
         int sum =  MaxPathSum(root);
         System.out.println("\n二叉树中的最大路径和为:" + sum);
+
+        preTree = "1 2  4 # # 5 # # 3 # 6 # #";
+        root = createBinTreeWithString(preTree);
+        System.out.print("前序遍历:\t");
+        preOrderIterative(root);
+        System.out.print("中序遍历:\t");
+        idOrderIterative(root);
+
+        preTree = "1 2  4  5 # #  #  6 # 7 # # 3 # 8 # #";
+        //5--->4--->7--->6--->2--->8--->3--->1--->NULL
+        root = createBinTreeWithString(preTree);
+        System.out.print("后序遍历:\t");
+        postOrderIterative(root);
+        System.out.print("后序遍历V2:\t");
+        postOrderIterativeV2(root);
+
     }
 }
 

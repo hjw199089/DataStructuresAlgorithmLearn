@@ -6,3 +6,5 @@ java中使用队列:java.util.Queue
 LinkedList类实现了Queue接口，可以把LinkedList当成Queue来用。
 使用样例见:
 QueueTest
+
+----栈
