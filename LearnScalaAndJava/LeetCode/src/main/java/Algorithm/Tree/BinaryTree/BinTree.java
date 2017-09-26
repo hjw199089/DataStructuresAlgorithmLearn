@@ -469,7 +469,7 @@ public class BinTree {
         printPosOrder(preOrderArr, sPre + len + 1, midOrderArr, sMid + len + 1, Len - len - 1);//打印右边
         System.out.print(preOrderArr[sPre] + "\t");
     }
-      /*==================================
+      /*=====================
          二叉树前序中序推后序
         前序	[1 2 4 7 3 5 8 9 6]
         中序	[4 7 2 1 8 5 9 3 6]
