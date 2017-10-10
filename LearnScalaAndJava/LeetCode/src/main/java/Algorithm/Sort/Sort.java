@@ -131,11 +131,11 @@ public class Sort {
     private static int partationFun(int inArr[], int low, int high) {
         int pivotloc = inArr[low];
         while (low < high) {
-            while (high > low && inArr[high] > pivotloc) {
+            while (high > low && inArr[high] >= pivotloc) {
                 high--;
             }
             inArr[low] = inArr[high];
-            while (high > low && inArr[low] < pivotloc) {
+            while (high > low && inArr[low] <= pivotloc) {
                 low++;
             }
             inArr[high] = inArr[low];
@@ -262,7 +262,7 @@ public class Sort {
         System.out.print("选择排序:\t");
         print(in);
 
-        in = new int[]{3, 4, 2, 1, 6, 8, 7};
+        in = new int[]{3, 4, 1, 1, 6, 8, 7};
         quickSort(in, in.length);
         System.out.print("快速排序:\t");
         print(in);
