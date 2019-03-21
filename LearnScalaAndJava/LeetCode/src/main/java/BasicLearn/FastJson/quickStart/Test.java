@@ -1,6 +1,7 @@
 package com.scalalearn.java.main.FastJson.quickStart;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -103,7 +104,10 @@ public class Test {
         PartialResult partial = new PartialResult();
         partial = JSON.parseObject("{\"ctypeSet\":[],\"ctype_freq\":\"0\",\"ctype_last\":\"0\",\"ctype_vistInfo\":[]}", PartialResult.class);
         System.out.println(JSON.toJSONString(partial));
-
+        String s = "{\"meta\":{\"code\":0,\"searchStatus\":\"continue\",\"errorMsg\":\"任务已超时\"},\"data\":{\"queryId\":\"e51df025-8b5c-4a91-8cb3-473625f930ba\"}}";
+        JSONObject job = JSON.parseObject(s);
+        JSONObject meta = (JSONObject) job.get("meta");
+        System.out.println(meta.getString("continue"));
     }
 
 }

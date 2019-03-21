@@ -15,5 +15,11 @@ public class test {
         int[] b = {1};
         testFunc(b);
         System.out.println(b[0]);
+
+        String[] cacheConfigArr = {"",""};
+        cacheConfigArr[0] = "ddd";
+        cacheConfigArr[1] = "dddddd";
+        System.out.println(cacheConfigArr[1]);
     }
+
 }

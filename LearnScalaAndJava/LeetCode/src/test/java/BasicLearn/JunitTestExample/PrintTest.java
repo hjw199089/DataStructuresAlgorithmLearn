@@ -21,7 +21,7 @@ public class PrintTest {
     @Parameterized.Parameters
     public static Collection<Object[]> t(){
         return Arrays.asList(new Object[][]{
-                {"hello","hello"} //( String  expected,String ctype)
+                {"hello","hell0o"} //( String  expected,String ctype)
                 }
         );
     }
