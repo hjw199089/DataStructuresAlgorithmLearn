@@ -1,0 +1,67 @@
+线程间的通信模型
+wait：进入等待
+notify：唤醒一个等待线程
+notifyAll:唤醒全部
+只有获得该对象的锁后才可以调用以上方法
+线程间的通信实现
+生产者：
+synchronized（obj）{...,obj.notifyAll();}
+消费者
+synchronized（obj）{obj.wait();...}
+
+
+并发工具java.util.concurrent
+同步器：解决同步问题
+执行器：管理线程
+并发集合：集合并发框架
+Fork/Join：并行编程支持
+atomic包：不需要提供锁就可以提供并发环境使用的原子操作
+locks包：为并发提供另一种替代方案
+
+同步器Semaphore和CountDownLatch
+经典信号量Semaphore
+Semaphore（int count）
+acquire（）/acquire（int num）
+release（）/release（int num）
+
+CountDownLatch同步器
+必须等待指定数量的事件后才可以继续运行
+CountDownLatch（int num）
+await（）
+countDown（）触发事件
+
+
+同步器--CyclicBarrier、Exchanger、Phaser
+CyclicBarrier（int num） 等待线程数量
+CyclicBarrier（int num，Runnable action）等待线程数量和所有线程到达后的操作
+await（）等待线程
+
+
+Echanger同步器
+简化两个线程间的数据交换
+Echanger<V>指定交换数据类型
+V exchange(V obj)等待线程到达 交换数据
+
+Phaser同步器
+和CyclicBarrier类似
+
+Phaser()/Phaser(int num)使用0/num个party创建Phaser
+register()注册party
+arriveAndAdvance()到达时等待到所有的party到达
+arriveAndDeregister()到时注销自己
+
+执行器
+用于启动控制线程执行
+核心接口Executor
+ExecutorService用于控制线程的执行和管理
+执行器
+ThreadPoolExecutor/ScheduledThreadPoolExecutor/ForkJoinPool
+Callable<V>标识有返回值的线程
+call()执行任务
+Future<V>标识Callable的返回值
+get()获取返回值
+
+Lock
+loc/tryLock
+unLock
+

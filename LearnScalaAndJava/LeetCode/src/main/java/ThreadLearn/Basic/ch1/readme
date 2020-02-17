@@ -1,0 +1,6 @@
+1、实现
+（1）继承Thread类
+（2）实现Runnable接口
+2、Thread类，实现run方法
+3、Runnable接口
+线程的启动用start()
