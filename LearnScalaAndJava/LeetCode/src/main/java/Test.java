@@ -10,7 +10,7 @@ public class Test {
     }
 
     public static void main(String[] args) {
-     String a = "ssssssEEEEEEDDD";
+        String a = "ssssssEEEEEEDDD";
         System.out.println(a.matches(".*?MDD.*?"));
     }
     
@@ -62,3 +62,4 @@ public class Test {
         return Collections.max(list);
    }
 }
+
